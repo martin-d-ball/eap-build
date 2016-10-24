@@ -21,7 +21,7 @@ function set_version {
     fi
     EAP_SHORT_VERSION=${EAP_VERSION%.*}
     SRC_FILE=jboss-eap-${EAP_VERSION}-src.zip
-
+    WORKING_DIR=work/jboss-eap-$EAP_SHORT_VERSION-src
     echo "Here we go. Building EAP version $EAP_VERSION."
 }
 
@@ -32,12 +32,12 @@ function patch_files {
     # Downloading Maven before the build, so that I can override the settings.xml file
     if [ -f work/jboss-eap-$EAP_SHORT_VERSION-src/tools/download-maven.sh ]
     then
-        cd work/jboss-eap-$EAP_SHORT_VERSION-src
+        cd $WORKING_DIR
         ./tools/download-maven.sh >/dev/null
         cd ../..
     fi
-    cp src/settings.xml work/jboss-eap-$EAP_SHORT_VERSION-src/tools/maven/conf/settings.xml
-    cp src/build.conf work/jboss-eap-$EAP_SHORT_VERSION-src/
+    cp src/settings.xml $WORKING_DIR/tools/maven/conf/settings.xml
+    cp src/build.conf $WORKING_DIR/
 }
 
 function check_commands {
@@ -122,8 +122,7 @@ echo $1
 
 function build_core {
     CORE_EAP_VERSION=$(get_module_version org.wildfly.core)
-
-    if [ -z "$CORE_EAP_VERSION" ]
+    if [ -z "$CORE_EAP_VERSION"]
     then
         echo "No WildFly Core version found, skipping!"
     else
@@ -157,7 +156,7 @@ function build_core {
 
 function maven_build {
     echo "Launching Maven build"
-    cd work/jboss-eap-$EAP_SHORT_VERSION-src/
+    cd $WORKING_DIR
     if [ "$MVN_OUTPUT" = "2" ]
     then
         echo "=== Main Maven build ===" | tee -a ../build.log
@@ -175,7 +174,7 @@ function maven_build {
 
 function save_result {
     # Copy zip files to the base dir, excluding the src files
-    find work/jboss-eap-$EAP_SHORT_VERSION-src/dist/target \( ! -name "jboss*-src.zip" \) -a \( -name "jboss*.zip" \) -exec cp -f {} dist/jboss-eap-$EAP_VERSION.zip \;
+    find $WORKING_DIR/dist/target \( ! -name "jboss*-src.zip" \) -a \( -name "jboss*.zip" \) -exec cp -f {} dist/jboss-eap-$EAP_VERSION.zip \;
 
     if [ -f dist/jboss-eap-$EAP_VERSION.zip ]
     then
@@ -204,6 +203,13 @@ function portable_dos2unix {
 }
 
 function get_module_version {
-    grep "<version.$1>" work/jboss-eap-7.0-src/pom.xml | sed -e "s/<version.$1>\(.*\)<\/version.$1>/\1/" | sed 's/ //g'
+    if [$EAP_VERSION == "7.0.0"]
+    then
+    grep "<version.$1>" $WORKING_DIR/pom.xml | sed -e "s/<version.$1>\(.*\)<\/version.$1>/\1/" | sed 's/ //g'
+    fi
+}
+
+function build_missing_dependencies {
+        ./src/missing_dependencies/$EAP_VERSION/build_missing.sh $WORKING_DIR
 }
 

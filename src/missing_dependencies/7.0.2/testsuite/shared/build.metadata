@@ -1,0 +1,15 @@
+# Created by buildmetadata-maven-plugin 1.7.0 ( SHA: 6f444cae ) 
+build.artifactId=wildfly-core-testsuite-shared
+build.groupId=org.wildfly.core
+build.java.compiler=HotSpot 64-Bit Tiered Compilers
+build.java.runtime.name=Java(TM) SE Runtime Environment
+build.java.runtime.version=1.8.0_102-b14
+build.java.vendor=Oracle Corporation
+build.java.vm=Java HotSpot(TM) 64-Bit Server VM
+build.maven.execution.cmdline=install -s /home/ballm/Helix3/external/eap-build/src/settings.xml -DskipTests -Dcheckstyle.skip\=true
+build.maven.version=3.2.5
+build.scmRevision.date=24.10.2016
+build.scmRevision.id=3af2e0eaf249e67d79762a38ce28200ce0c3474a
+build.scmRevision.url=scm\:git\:git@github.com\:wildfly/wildfly-core.git/wildfly-core-testsuite-shared
+build.version=2.1.8.Final-rebuilt-from-2.x-branch
+build.version.full=2.1.8.Final-rebuilt-from-2.x-branchr3af2e0eaf249e67d79762a38ce28200ce0c3474a
