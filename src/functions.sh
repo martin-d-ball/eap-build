@@ -130,18 +130,12 @@ function build_core {
 	#Hack to force the version to the older dependency as the dependency for 7.0.1 + does not exist, instead we use the older version, but rebuild the core feature pack using the correct pom for the version of eap we are building and then override the core-feature-pack patch applied to the eap parent pom.
 	if [ "$CORE_EAP_VERSION" \> "2.1.2.Final-redhat-1" ]
 	then
-	echo "The core eap version is $CORE_EAP_VERSION to reverting to 2.1.2.Final-redhat-1 and getting the core-feature-pack from public repo"
-	    wget -r --no-parent -nH --cut-dirs=4 -P download/missing-dependencies/ https://github.com/wildfly/wildfly-core/tree/2.x/core-feature-pack/  
+	echo "The core eap version is $CORE_EAP_VERSION to reverting to 2.1.2.Final-redhat-1"	    
+	    REAL_CORE_EAP_VERSION=$CORE_EAP_VERSION
 	    CORE_EAP_VERSION="2.1.2.Final-redhat-1"
 	fi
         download_and_unzip https://maven.repository.redhat.com/earlyaccess/org/wildfly/core/wildfly-core-parent/$CORE_EAP_VERSION/wildfly-core-parent-$CORE_EAP_VERSION-project-sources.tar.gz
 
-        if [ -f src/wildfly-core-$CORE_EAP_VERSION.patch ]
-        then
-            echo "Patching core files"
-            echo "=== Patch Core ===" >> work/build.log
-            patch -p0 < src/wildfly-core-$CORE_EAP_VERSION.patch >> work/build.log || { echo >&2 "Error applying patch.  Aborting."; exit 1; }
-        fi
 
         cd work/wildfly-core-parent-$CORE_EAP_VERSION
 
@@ -159,6 +153,17 @@ function build_core {
             ../jboss-eap-$EAP_SHORT_VERSION-src/tools/maven/bin/mvn install -s ../../src/settings.xml -DskipTests >> ../build.log 2>&1
         fi
         cd ../..
+
+        if [ -f src/wildfly-core-$REAL_CORE_EAP_VERSION.patch ]
+        then
+            echo "Patching core files"
+            echo "=== Patch Core ===" >> work/build.log
+            patch -p0 < src/wildfly-core-$REAL_CORE_EAP_VERSION.patch >> work/build.log || { echo >&2 "Error applying patch.  Aborting."; exit 1; }
+        fi
+        cd work/wildfly-core-parent-$CORE_EAP_VERSION
+        ../jboss-eap-$EAP_SHORT_VERSION-src/tools/maven/bin/mvn install -s ../../src/settings.xml -DskipTests -Dcheckstyle.skip=true| tee -a ../build.log
+        cd ../../
+
     fi
 }
 
