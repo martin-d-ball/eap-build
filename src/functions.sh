@@ -122,10 +122,18 @@ echo $1
 
 function build_core {
     CORE_EAP_VERSION=$(get_module_version org.wildfly.core)
-    if [ -z "$CORE_EAP_VERSION"]
+    if [ -z "$CORE_EAP_VERSION" ]
     then
         echo "No WildFly Core version found, skipping!"
     else
+	echo "The core eap version is $CORE_EAP_VERSION" 
+	#Hack to force the version to the older dependency as the dependency for 7.0.1 + does not exist, instead we use the older version, but rebuild the core feature pack using the correct pom for the version of eap we are building and then override the core-feature-pack patch applied to the eap parent pom.
+	if [ "$CORE_EAP_VERSION" \> "2.1.2.Final-redhat-1" ]
+	then
+	echo "The core eap version is $CORE_EAP_VERSION to reverting to 2.1.2.Final-redhat-1 and getting the core-feature-pack from public repo"
+	    wget -r --no-parent -nH --cut-dirs=4 -P download/missing-dependencies/ https://github.com/wildfly/wildfly-core/tree/2.x/core-feature-pack/  
+	    CORE_EAP_VERSION="2.1.2.Final-redhat-1"
+	fi
         download_and_unzip https://maven.repository.redhat.com/earlyaccess/org/wildfly/core/wildfly-core-parent/$CORE_EAP_VERSION/wildfly-core-parent-$CORE_EAP_VERSION-project-sources.tar.gz
 
         if [ -f src/wildfly-core-$CORE_EAP_VERSION.patch ]
@@ -203,10 +211,7 @@ function portable_dos2unix {
 }
 
 function get_module_version {
-    if [$EAP_VERSION == "7.0.0"]
-    then
     grep "<version.$1>" $WORKING_DIR/pom.xml | sed -e "s/<version.$1>\(.*\)<\/version.$1>/\1/" | sed 's/ //g'
-    fi
 }
 
 function build_missing_dependencies {
