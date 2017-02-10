@@ -1,0 +1,58 @@
+--- work/jboss-eap-7.0-src/pom.xml
++++ work-done/jboss-eap-7.0-src/jboss-eap/pom.xml
+@@ -832,7 +832,53 @@
+                 <version>${version.org.wildfly.core}</version>
+                 <scope>import</scope>
+             </dependency>
+-
++            <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-subsystem-test</artifactId>
++                <type>pom</type>
++                <version>2.1.2.Final-redhat-1</version>
++                <scope>test</scope>
++            </dependency>
++            <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-subsystem-test-framework</artifactId>
++                <version>2.1.2.Final-redhat-1</version>
++                <scope>test</scope>
++            </dependency>
++            <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-model-test</artifactId>
++                <version>2.1.2.Final-redhat-1</version>
++                <scope>test</scope>
++            </dependency>
++             <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-core-model-test-framework</artifactId>
++                <version>2.1.2.Final-redhat-1</version>
++                <scope>test</scope>
++            </dependency>
++            <dependency>
++               <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-core-testsuite-shared</artifactId>
++                <version>2.1.2.Final-redhat-1</version>
++            </dependency>
++           <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-core-test-runner</artifactId>
++                <version>2.1.2.Final-redhat-1</version>
++            </dependency>
++            <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-core-feature-pack</artifactId>
++                <version>2.1.10.Final-rebuilt-from-2.1.2.Final-redhat-1</version>
++                <type>zip</type>
++            </dependency>
++           <dependency>
++                <groupId>org.wildfly.core</groupId>
++                <artifactId>wildfly-core-feature-pack</artifactId>
++                <version>2.1.10.Final-rebuilt-from-2.1.2.Final-redhat-1</version>
++                <type>pom</type>
++            </dependency>
+             <!-- Modules in this project -->
+ 
+             <dependency>
+
